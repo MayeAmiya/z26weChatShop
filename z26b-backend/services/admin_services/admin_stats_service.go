@@ -27,16 +27,19 @@ func (s *AdminStatsService) GetStats() (map[string]interface{}, error) {
 	}
 	stats["total_users"] = totalUsers
 
-	// 新增用户（今日）
-	today := time.Now().Truncate(24 * time.Hour)
+	// 新增用户（今日）- 使用时间戳
+	now := time.Now()
+	todayStart := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
+	todayTimestamp := todayStart.Unix() * 1000 // 毫秒时间戳
+
 	var newUsersToday int64
-	if err := s.db.Model(&internal.User{}).Where("created_at >= ?", today).Count(&newUsersToday).Error; err != nil {
+	if err := s.db.Model(&internal.User{}).Where("created_at >= ?", todayStart).Count(&newUsersToday).Error; err != nil {
 		return nil, err
 	}
 	stats["new_users_today"] = newUsersToday
 
 	// 新增用户（本周）
-	weekAgo := time.Now().AddDate(0, 0, -7)
+	weekAgo := now.AddDate(0, 0, -7)
 	var newUsersWeek int64
 	if err := s.db.Model(&internal.User{}).Where("created_at >= ?", weekAgo).Count(&newUsersWeek).Error; err != nil {
 		return nil, err
@@ -64,40 +67,48 @@ func (s *AdminStatsService) GetStats() (map[string]interface{}, error) {
 	}
 	stats["total_orders"] = totalOrders
 
-	// 今日订单
+	// 今日订单 - 使用毫秒时间戳（Order.CreatedAt 是 int64 毫秒时间戳）
 	var ordersToday int64
-	if err := s.db.Model(&internal.Order{}).Where("created_at >= ?", today).Count(&ordersToday).Error; err != nil {
+	if err := s.db.Model(&internal.Order{}).Where("created_at >= ?", todayTimestamp).Count(&ordersToday).Error; err != nil {
 		return nil, err
 	}
 	stats["orders_today"] = ordersToday
 
 	// 本周订单
+	weekAgoTimestamp := weekAgo.Unix() * 1000
 	var ordersWeek int64
-	if err := s.db.Model(&internal.Order{}).Where("created_at >= ?", weekAgo).Count(&ordersWeek).Error; err != nil {
+	if err := s.db.Model(&internal.Order{}).Where("created_at >= ?", weekAgoTimestamp).Count(&ordersWeek).Error; err != nil {
 		return nil, err
 	}
 	stats["orders_week"] = ordersWeek
 
-	// 销售额统计
+	// 有效订单状态（已发货、已完成等）
+	validStatuses := []string{
+		internal.OrderStatusToSend,    // 待发货
+		internal.OrderStatusToReceive, // 待收货
+		internal.OrderStatusFinished,  // 已完成
+	}
+
+	// 销售额统计 - 使用 final_price 字段
 	var totalSales float64
-	if err := s.db.Model(&internal.Order{}).Where("status IN ?", []string{"completed", "shipped"}).
-		Select("COALESCE(SUM(total_amount), 0)").Scan(&totalSales).Error; err != nil {
+	if err := s.db.Model(&internal.Order{}).Where("status IN ?", validStatuses).
+		Select("COALESCE(SUM(final_price), 0)").Scan(&totalSales).Error; err != nil {
 		return nil, err
 	}
 	stats["total_sales"] = totalSales
 
 	// 今日销售额
 	var salesToday float64
-	if err := s.db.Model(&internal.Order{}).Where("status IN ? AND created_at >= ?", []string{"completed", "shipped"}, today).
-		Select("COALESCE(SUM(total_amount), 0)").Scan(&salesToday).Error; err != nil {
+	if err := s.db.Model(&internal.Order{}).Where("status IN ? AND created_at >= ?", validStatuses, todayTimestamp).
+		Select("COALESCE(SUM(final_price), 0)").Scan(&salesToday).Error; err != nil {
 		return nil, err
 	}
 	stats["sales_today"] = salesToday
 
 	// 本周销售额
 	var salesWeek float64
-	if err := s.db.Model(&internal.Order{}).Where("status IN ? AND created_at >= ?", []string{"completed", "shipped"}, weekAgo).
-		Select("COALESCE(SUM(total_amount), 0)").Scan(&salesWeek).Error; err != nil {
+	if err := s.db.Model(&internal.Order{}).Where("status IN ? AND created_at >= ?", validStatuses, weekAgoTimestamp).
+		Select("COALESCE(SUM(final_price), 0)").Scan(&salesWeek).Error; err != nil {
 		return nil, err
 	}
 	stats["sales_week"] = salesWeek
@@ -123,22 +134,33 @@ func (s *AdminStatsService) GetStats() (map[string]interface{}, error) {
 func (s *AdminStatsService) GetSalesStats(days int) ([]map[string]interface{}, error) {
 	var results []map[string]interface{}
 
+	// 有效订单状态
+	validStatuses := []string{
+		internal.OrderStatusToSend,
+		internal.OrderStatusToReceive,
+		internal.OrderStatusFinished,
+	}
+
 	now := time.Now()
 	for i := days - 1; i >= 0; i-- {
 		date := now.AddDate(0, 0, -i)
 		startOfDay := time.Date(date.Year(), date.Month(), date.Day(), 0, 0, 0, 0, date.Location())
 		endOfDay := startOfDay.AddDate(0, 0, 1).Add(-time.Second)
 
+		// 转换为毫秒时间戳
+		startTimestamp := startOfDay.Unix() * 1000
+		endTimestamp := endOfDay.Unix() * 1000
+
 		var dailySales float64
 		if err := s.db.Model(&internal.Order{}).
-			Where("status IN ? AND created_at BETWEEN ? AND ?", []string{"completed", "shipped"}, startOfDay, endOfDay).
-			Select("COALESCE(SUM(total_amount), 0)").Scan(&dailySales).Error; err != nil {
+			Where("status IN ? AND created_at BETWEEN ? AND ?", validStatuses, startTimestamp, endTimestamp).
+			Select("COALESCE(SUM(final_price), 0)").Scan(&dailySales).Error; err != nil {
 			return nil, err
 		}
 
 		var orderCount int64
 		if err := s.db.Model(&internal.Order{}).
-			Where("created_at BETWEEN ? AND ?", startOfDay, endOfDay).
+			Where("created_at BETWEEN ? AND ?", startTimestamp, endTimestamp).
 			Count(&orderCount).Error; err != nil {
 			return nil, err
 		}
@@ -157,12 +179,20 @@ func (s *AdminStatsService) GetSalesStats(days int) ([]map[string]interface{}, e
 func (s *AdminStatsService) GetTopProducts(limit int) ([]map[string]interface{}, error) {
 	var results []map[string]interface{}
 
-	rows, err := s.db.Table("order_items").
-		Select("spu_id, spu.name, spu.image, SUM(order_items.quantity) as total_quantity, SUM(order_items.total_price) as total_sales").
-		Joins("JOIN spus spu ON order_items.spu_id = spu.id").
-		Joins("JOIN orders o ON order_items.order_id = o.id").
-		Where("o.status IN ?", []string{"completed", "shipped"}).
-		Group("spu_id, spu.name, spu.image").
+	// 有效订单状态
+	validStatuses := []string{
+		internal.OrderStatusToSend,
+		internal.OrderStatusToReceive,
+		internal.OrderStatusFinished,
+	}
+
+	rows, err := s.db.Table("order_item").
+		Select("sku.\"SPUID\" as spu_id, spu.name, spu.cover_image as image, SUM(order_item.quantity) as total_quantity, SUM(order_item.price * order_item.quantity) as total_sales").
+		Joins("JOIN sku ON order_item.sku_id = sku.id").
+		Joins("JOIN spu ON sku.\"SPUID\" = spu.id").
+		Joins("JOIN \"order\" o ON order_item.order_id = o.id").
+		Where("o.status IN ?", validStatuses).
+		Group("sku.\"SPUID\", spu.name, spu.cover_image").
 		Order("total_quantity DESC").
 		Limit(limit).
 		Rows()

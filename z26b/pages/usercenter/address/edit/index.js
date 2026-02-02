@@ -87,7 +87,13 @@ Page({
         tips: '请完善详细地址',
       };
     }
-    if (detailAddress && detailAddress.trim().length > 50) {
+    if (detailAddress.trim().length < 5) {
+      return {
+        isLegal: false,
+        tips: '详细地址至少5个字符',
+      };
+    }
+    if (detailAddress.trim().length > 50) {
       return {
         isLegal: false,
         tips: '详细地址不能超过50个字符',
@@ -127,8 +133,11 @@ Page({
         await action();
         addressListShouldFresh();
         wx.navigateBack({ delta: 1 });
-      } catch {
-        this.toast(failedMessage);
+      } catch (err) {
+        // 显示具体错误信息，便于调试
+        const errorMsg = err?.message || failedMessage;
+        console.error('地址操作失败:', err);
+        this.toast(errorMsg);
       } finally {
         this.unsetLoading();
       }
