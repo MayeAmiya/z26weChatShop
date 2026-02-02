@@ -1,0 +1,52 @@
+<view class="goods-category custom-class">
+  <c-sidebar custom-class="custom-sidebar" bindchange="onParentChange" activeKey="{{activeKey}}">
+    <c-sidebar-item wx:for="{{ category }}" wx:key="index" title="{{ item.name }}" />
+  </c-sidebar>
+  <view class="goods-category__right">
+    <!-- 有子分类时显示子分类列表 -->
+    <view wx:if="{{category[activeKey].child_cate && category[activeKey].child_cate.length > 0}}" class="goods-category-normal">
+      <view class="goods-category-normal-item">
+        <view class="goods-category-normal-item-second-container">
+          <block wx:for="{{category[activeKey].child_cate}}" wx:key="index">
+            <view class="goods-category-normal-item-second-container-item" wx:for-key="index" bindtap="changCategory" data-item="{{item}}">
+              <t-image src="{{item.image}}" t-class="image" />
+              <view class="flex goods-category-normal-item-container-item-title">
+                {{item.name}}
+              </view>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+    <!-- 无子分类时直接显示商品列表 -->
+    <view wx:else class="goods-list-container">
+      <view wx:if="{{loading}}" class="loading-container">
+        <t-loading theme="circular" size="40rpx" text="加载中..." />
+      </view>
+      <view wx:elif="{{goodsList.length === 0}}" class="empty-container">
+        <t-empty description="暂无商品" />
+      </view>
+      <scroll-view wx:else scroll-y class="goods-scroll">
+        <view class="goods-grid">
+          <view 
+            wx:for="{{goodsList}}" 
+            wx:key="_id" 
+            class="goods-item"
+            bindtap="onGoodsClick"
+            data-goods="{{item}}"
+          >
+            <image 
+              src="{{item.cover_image}}" 
+              mode="aspectFit" 
+              class="goods-image"
+            />
+            <view class="goods-info">
+              <view class="goods-name">{{item.name}}</view>
+              <view class="goods-price">¥{{item.price || 0}}</view>
+            </view>
+          </view>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,25 @@
+module.exports.slice = function(arr) {
+  return arr.slice(0, 2);
+};
+module.exports.imgCut = function(url, width, height) {
+  if (!url) return url;
+  // localhost或127.0.0.1不做转换（本地开发MinIO）
+  if (url.indexOf('localhost') !== -1 || url.indexOf('127.0.0.1') !== -1) {
+    return url;
+  }
+  if (url && (url.slice(0, 5) === 'http:' || url.slice(0, 6) === 'https:' || url.slice(0, 2) === '//')) {
+    var argsStr = 'imageMogr2/thumbnail/!' + width +  'x' + height + 'r';
+    if (url.indexOf('?') > -1) {
+      url = url + '&' + argsStr;
+    } else {
+      url = url + '?' + argsStr;
+    }
+    if (url.slice(0, 5) === 'http:') {
+      url = 'https://' + url.slice(5)
+    }
+    if (url.slice(0, 2) === '//') {
+      url = 'https:' + url
+    }
+  }
+  return url;
+};

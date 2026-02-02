@@ -1,0 +1,11 @@
+{
+  "component": true,
+  "usingComponents": {
+    "c-tabbar": "./components/c-tabbar/index",
+    "c-sidebar": "./components/c-sidebar/index",
+    "c-sidebar-item": "./components/c-sidebar/c-sidebar-item/index",
+    "t-image": "/components/webp-image/index",
+    "t-loading": "tdesign-miniprogram/loading/loading",
+    "t-empty": "tdesign-miniprogram/empty/empty"
+  }
+}

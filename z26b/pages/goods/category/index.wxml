@@ -1,0 +1,12 @@
+<view class="wrap">
+  <goods-category 
+    level="{{2}}" 
+    custom-class="goods-category-class" 
+    category="{{cates}}" 
+    goodsList="{{goodsList}}"
+    loading="{{loading}}"
+    bind:cateChange="onCateChange"
+    bind:goodsClick="onGoodsClick"
+  />
+  <t-toast id="t-toast" />
+</view>

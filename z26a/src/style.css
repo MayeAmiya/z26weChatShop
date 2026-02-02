@@ -1,0 +1,934 @@
+/* Windows 2000 Classic Style */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Classic Windows 2000 Color Palette */
+:root {
+  --win-bg: #c0c0c0;
+  --win-bg-dark: #808080;
+  --win-bg-light: #dfdfdf;
+  --win-white: #ffffff;
+  --win-black: #000000;
+  --win-blue: #000080;
+  --win-blue-light: #0a246a;
+  --win-title-active: linear-gradient(to right, #0a246a, #a6caf0);
+  --win-title-inactive: linear-gradient(to right, #808080, #c0c0c0);
+  --win-highlight: #0000ff;
+  --win-button-face: #c0c0c0;
+  --win-button-shadow: #808080;
+  --win-button-highlight: #ffffff;
+  --win-button-dark: #404040;
+}
+
+/* Base styles */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Tahoma', 'Microsoft Sans Serif', 'MS Sans Serif', sans-serif;
+  font-size: 11px;
+  background-color: #008080; /* Classic teal desktop */
+  color: var(--win-black);
+  -webkit-font-smoothing: none;
+}
+
+/* 3D Border Effects */
+.win-border-outset {
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+}
+
+.win-border-inset {
+  border: 2px solid;
+  border-color: var(--win-button-dark) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-dark);
+}
+
+/* Classic Window */
+.win-window {
+  background-color: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  box-shadow: 1px 1px 0 var(--win-black);
+}
+
+/* Window Title Bar */
+.win-titlebar {
+  background: var(--win-title-active);
+  color: white;
+  padding: 2px 4px;
+  font-weight: bold;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+}
+
+.win-titlebar-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.win-titlebar-buttons {
+  margin-left: auto;
+  display: flex;
+  gap: 2px;
+}
+
+.win-titlebar-btn {
+  width: 16px;
+  height: 14px;
+  background-color: var(--win-bg);
+  border: 1px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0;
+}
+
+.win-titlebar-btn:active {
+  border-color: var(--win-button-dark) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-dark);
+}
+
+/* Classic Button */
+.win-btn {
+  background-color: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  padding: 4px 16px;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  min-width: 75px;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.win-btn:hover {
+  background-color: #d4d4d4;
+}
+
+.win-btn:active, .win-btn.active {
+  border-color: var(--win-button-dark) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-dark);
+}
+
+.win-btn:disabled {
+  color: var(--win-button-shadow);
+  cursor: not-allowed;
+}
+
+.win-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+/* Classic Input */
+.win-input {
+  background-color: var(--win-white);
+  border: 2px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  padding: 3px 4px;
+  font-family: inherit;
+  font-size: 11px;
+  outline: none;
+}
+
+.win-input:focus {
+  outline: none;
+}
+
+/* Classic Select/Dropdown */
+.win-select {
+  background-color: var(--win-white);
+  border: 2px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  padding: 2px 20px 2px 4px;
+  font-family: inherit;
+  font-size: 11px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23000' d='M4 6l4 4 4-4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 2px center;
+  cursor: pointer;
+}
+
+/* Classic Checkbox */
+.win-checkbox {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  background-color: var(--win-white);
+  border: 2px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  cursor: pointer;
+  vertical-align: middle;
+}
+
+.win-checkbox:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9'%3E%3Cpath fill='%23000' d='M1 4l2 2 5-5v2l-5 5-4-4z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Menu Bar */
+.win-menubar {
+  background-color: var(--win-bg);
+  border-bottom: 1px solid var(--win-button-shadow);
+  padding: 2px 0;
+  display: flex;
+  gap: 0;
+}
+
+.win-menu-item {
+  padding: 2px 8px;
+  cursor: pointer;
+}
+
+.win-menu-item:hover {
+  background-color: var(--win-blue);
+  color: white;
+}
+
+/* Status Bar */
+.win-statusbar {
+  background-color: var(--win-bg);
+  border-top: 2px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  padding: 2px 4px;
+  font-size: 11px;
+  display: flex;
+}
+
+.win-statusbar-panel {
+  border: 1px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  padding: 1px 4px;
+}
+
+/* Toolbar */
+.win-toolbar {
+  background-color: var(--win-bg);
+  border-bottom: 1px solid var(--win-button-shadow);
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.win-toolbar-btn {
+  background-color: transparent;
+  border: 1px solid transparent;
+  padding: 2px 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.win-toolbar-btn:hover {
+  border: 1px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+}
+
+.win-toolbar-btn:active {
+  border-color: var(--win-button-dark) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-dark);
+}
+
+.win-toolbar-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+.win-toolbar-separator {
+  width: 2px;
+  height: 20px;
+  border-left: 1px solid var(--win-button-shadow);
+  border-right: 1px solid var(--win-button-highlight);
+  margin: 0 4px;
+}
+
+/* Tree View (Left Panel) */
+.win-treeview {
+  background-color: var(--win-white);
+  border: 2px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  overflow: auto;
+}
+
+.win-tree-item {
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.win-tree-item:hover {
+  background-color: var(--win-blue);
+  color: white;
+}
+
+.win-tree-item.selected {
+  background-color: var(--win-blue);
+  color: white;
+}
+
+.win-tree-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* List View */
+.win-listview {
+  background-color: var(--win-white);
+  border: 2px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  overflow: auto;
+}
+
+.win-list-header {
+  background-color: var(--win-bg);
+  border-bottom: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  display: flex;
+  font-weight: bold;
+  position: sticky;
+  top: 0;
+}
+
+.win-list-header-cell {
+  padding: 3px 8px;
+  border-right: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.win-list-header-cell img {
+  width: 16px;
+  height: 16px;
+}
+
+.win-list-row {
+  display: flex;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.win-list-row:hover {
+  background-color: #e8e8e8;
+}
+
+.win-list-row.selected {
+  background-color: var(--win-blue);
+  color: white;
+}
+
+.win-list-cell {
+  padding: 3px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.win-list-cell img {
+  width: 16px;
+  height: 16px;
+}
+
+/* Group Box */
+.win-groupbox {
+  border: 1px solid var(--win-button-shadow);
+  padding: 12px 8px 8px;
+  margin: 8px 0;
+  position: relative;
+}
+
+.win-groupbox-title {
+  position: absolute;
+  top: -8px;
+  left: 8px;
+  background-color: var(--win-bg);
+  padding: 0 4px;
+  font-size: 11px;
+}
+
+/* Tab Control */
+.win-tabs {
+  display: flex;
+  background-color: var(--win-bg);
+  padding-left: 4px;
+}
+
+.win-tab {
+  background-color: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  border-bottom: none;
+  padding: 4px 12px;
+  margin-right: 2px;
+  cursor: pointer;
+  position: relative;
+  top: 2px;
+}
+
+.win-tab.active {
+  background-color: var(--win-bg);
+  border-bottom: 2px solid var(--win-bg);
+  top: 0;
+  padding-top: 6px;
+}
+
+.win-tab-content {
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  background-color: var(--win-bg);
+  padding: 8px;
+}
+
+/* Taskbar */
+.win-taskbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background-color: var(--win-bg);
+  border-top: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  display: flex;
+  align-items: center;
+  padding: 2px 4px;
+  z-index: 1000;
+}
+
+.win-start-btn {
+  background-color: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  padding: 2px 6px;
+  font-weight: bold;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.win-start-btn img {
+  width: 16px;
+  height: 16px;
+}
+
+.win-start-btn:active {
+  border-color: var(--win-button-dark) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-dark);
+}
+
+.win-taskbar-programs {
+  flex: 1;
+  display: flex;
+  gap: 2px;
+  margin-left: 4px;
+  overflow: hidden;
+}
+
+.win-taskbar-item {
+  background-color: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  padding: 2px 8px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.win-taskbar-item.active {
+  border-color: var(--win-button-dark) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-dark);
+  background-color: #d4d4d4;
+}
+
+.win-taskbar-item img {
+  width: 16px;
+  height: 16px;
+}
+
+.win-tray {
+  border: 2px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  padding: 2px 8px;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Dialog / Modal */
+.win-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.win-dialog {
+  min-width: 300px;
+}
+
+.win-dialog-body {
+  padding: 16px;
+  display: flex;
+  gap: 16px;
+}
+
+.win-dialog-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+.win-dialog-buttons {
+  padding: 8px 16px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  border-top: 1px solid var(--win-button-shadow);
+}
+
+/* Table in classic style */
+.win-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.win-table th {
+  background-color: var(--win-bg);
+  border: 1px solid var(--win-button-shadow);
+  padding: 4px 8px;
+  text-align: left;
+  font-weight: bold;
+}
+
+.win-table td {
+  border: 1px solid #e0e0e0;
+  padding: 4px 8px;
+  background-color: white;
+}
+
+.win-table tr:hover td {
+  background-color: #e8e8e8;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+
+::-webkit-scrollbar-track {
+  background: repeating-linear-gradient(
+    45deg,
+    var(--win-bg),
+    var(--win-bg) 2px,
+    var(--win-white) 2px,
+    var(--win-white) 4px
+  );
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+}
+
+::-webkit-scrollbar-button {
+  background-color: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+}
+
+/* Link */
+.win-link {
+  color: var(--win-blue);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Badge / Status */
+.win-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 10px;
+  border: 1px solid var(--win-button-shadow);
+}
+
+.win-badge-success {
+  background-color: #00ff00;
+  color: black;
+}
+
+.win-badge-warning {
+  background-color: #ffff00;
+  color: black;
+}
+
+.win-badge-error {
+  background-color: #ff0000;
+  color: white;
+}
+
+.win-badge-info {
+  background-color: var(--win-blue);
+  color: white;
+}
+
+/* Card stat (for dashboard) */
+.win-stat-card {
+  background-color: var(--win-bg);
+  border: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.win-stat-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.win-stat-value {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.win-stat-label {
+  font-size: 11px;
+  color: var(--win-button-shadow);
+}
+
+/* Form Field */
+.win-field {
+  margin-bottom: 8px;
+}
+
+.win-field label {
+  display: block;
+  margin-bottom: 2px;
+}
+
+/* Content Panel */
+.win-content {
+  background-color: var(--win-bg);
+  padding: 8px;
+}
+
+/* Explorer Address Bar */
+.win-address-bar {
+  background-color: var(--win-bg);
+  padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-bottom: 1px solid var(--win-button-shadow);
+}
+
+.win-address-bar label {
+  font-size: 11px;
+}
+
+.win-address-bar input {
+  flex: 1;
+}
+
+/* ListView Header and Items */
+.win-listview-header {
+  background-color: var(--win-bg);
+  border-bottom: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  display: flex;
+  font-weight: bold;
+  font-size: 11px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.win-listview-header > div {
+  padding: 3px 8px;
+  border-right: 2px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.win-listview-item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+  padding: 2px 0;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.win-listview-item:hover {
+  background-color: #e8e8e8;
+}
+
+.win-listview-item.selected {
+  background-color: var(--win-blue);
+  color: white;
+}
+
+.win-listview-item > div {
+  padding: 2px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Small button */
+.win-btn-sm {
+  padding: 1px 4px !important;
+  font-size: 10px !important;
+}
+
+/* Badge styles */
+.win-badge {
+  display: inline-block;
+  padding: 1px 4px;
+  font-size: 10px;
+  border: 1px solid;
+  border-color: var(--win-button-highlight) var(--win-button-dark) var(--win-button-dark) var(--win-button-highlight);
+}
+
+.win-badge-green {
+  background-color: #90ee90;
+  color: #004000;
+}
+
+.win-badge-red {
+  background-color: #ffcccc;
+  color: #800000;
+}
+
+.win-badge-yellow {
+  background-color: #ffff99;
+  color: #806000;
+}
+
+.win-badge-blue {
+  background-color: #ccccff;
+  color: #000080;
+}
+
+.win-badge-purple {
+  background-color: #e0ccff;
+  color: #400080;
+}
+
+.win-badge-gray {
+  background-color: #e0e0e0;
+  color: #404040;
+}
+
+/* Desktop Icon */
+.win-desktop-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 80px;
+  padding: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.win-desktop-icon:hover {
+  background-color: rgba(0, 0, 128, 0.2);
+}
+
+.win-desktop-icon img {
+  width: 32px;
+  height: 32px;
+  margin-bottom: 4px;
+}
+
+.win-desktop-icon span {
+  font-size: 11px;
+  word-wrap: break-word;
+}
+
+/* Select dropdown */
+.win-select {
+  background-color: var(--win-white);
+  border: 2px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  padding: 2px 4px;
+  font-family: inherit;
+  font-size: 11px;
+}
+
+.win-select:focus {
+  outline: none;
+}
+
+/* Tab Bar - Windows 2000 style */
+.win-tabs {
+  display: flex;
+  align-items: flex-end;
+  padding: 0 4px;
+  background-color: var(--win-bg);
+  border-bottom: 1px solid var(--win-button-shadow);
+}
+
+.win-tab {
+  padding: 4px 12px;
+  margin-right: 2px;
+  background-color: var(--win-bg);
+  border: 1px solid;
+  border-color: var(--win-button-highlight) var(--win-button-shadow) var(--win-bg) var(--win-button-highlight);
+  border-bottom: none;
+  cursor: pointer;
+  font-size: 11px;
+  position: relative;
+  top: 1px;
+}
+
+.win-tab:hover {
+  background-color: var(--win-bg-light);
+}
+
+.win-tab.active {
+  background-color: var(--win-white);
+  border-color: var(--win-button-shadow) var(--win-button-shadow) var(--win-white) var(--win-button-shadow);
+  border-top: 2px solid var(--win-blue);
+  font-weight: bold;
+}
+
+/* Tag - Small colored labels */
+.win-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 10px;
+  border-radius: 2px;
+  color: #fff;
+  text-shadow: 0 0 1px rgba(0,0,0,0.5);
+  white-space: nowrap;
+}
+
+/* Tag List - 标签列表管理 */
+.win-tag-list {
+  background: var(--win-white);
+  border: 2px solid;
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+  padding: 4px;
+  min-height: 60px;
+}
+
+.win-tag-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px;
+  margin-bottom: 2px;
+  background: var(--win-bg-light);
+  border: 1px solid var(--win-button-shadow);
+}
+
+.win-tag-item:hover {
+  background: #e8e8e8;
+}
+
+.win-tag-color {
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--win-button-shadow);
+  flex-shrink: 0;
+}
+
+.win-tag-btn {
+  background: var(--win-bg);
+  border: 1px solid;
+  border-color: var(--win-button-highlight) var(--win-button-shadow) var(--win-button-shadow) var(--win-button-highlight);
+  width: 18px;
+  height: 18px;
+  font-size: 12px;
+  line-height: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.win-tag-btn:hover {
+  background: #d4d4d4;
+}
+
+.win-tag-btn:active {
+  border-color: var(--win-button-shadow) var(--win-button-highlight) var(--win-button-highlight) var(--win-button-shadow);
+}
+
+.win-tag-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  margin-top: 4px;
+  background: var(--win-bg);
+  border: 1px dashed var(--win-button-shadow);
+  cursor: pointer;
+  color: var(--win-button-shadow);
+}
+
+.win-tag-add:hover {
+  background: var(--win-bg-light);
+  color: var(--win-black);
+}
+
+.win-color-picker {
+  width: 24px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--win-button-shadow);
+  cursor: pointer;
+}
+
+/* Settings Icon */
+.win-settings-btn {
+  background: none;
+  border: none;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.win-settings-btn:hover {
+  background-color: rgba(0,0,0,0.1);
+}

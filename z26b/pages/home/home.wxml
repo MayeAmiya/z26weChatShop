@@ -1,0 +1,55 @@
+<view style="text-align: center; color: #b9b9b9" wx:if="{{pageLoading}}">
+  <t-loading theme="circular" size="40rpx" text="加载中..." inherit-color />
+</view>
+<view class="home-page-header">
+  <view class="search" bind:tap="navToSearchPage">
+    <t-search t-class-input="t-search__input" t-class-input-container="t-search__input-container" leftIcon="" disabled>
+      <t-icon slot="left-icon" prefix="wr" name="search" size="40rpx" color="#bbb" />
+    </t-search>
+  </view>
+  <view class="swiper-wrap">
+    <t-swiper wx:if="{{imgSrcs.length > 0}}" current="{{current}}" autoplay="{{autoplay}}" duration="{{duration}}" interval="{{interval}}" navigation="{{navigation}}" imageProps="{{swiperImageProps}}" list="{{imgSrcs}}" />
+  </view>
+</view>
+<view class="home-page-container">
+  <!-- 首页内容（支持商品卡片） -->
+  <view class="home-content" wx:if="{{contentParts.length > 0}}">
+    <view class="home-content-title" wx:if="{{homeContent.title}}">{{homeContent.title}}</view>
+    <view class="home-content-body">
+      <block wx:for="{{contentParts}}" wx:key="index">
+        <!-- 普通HTML内容 -->
+        <rich-text wx:if="{{item.type === 'html'}}" nodes="{{item.content}}" />
+        <!-- 商品卡片列表 -->
+        <view wx:elif="{{item.type === 'product'}}" class="goods-grid">
+          <view wx:if="{{item.loading}}" class="goods-item goods-loading">
+            <t-loading theme="circular" size="30rpx" />
+          </view>
+          <view wx:elif="{{item.error}}" class="goods-item goods-error">
+            商品加载失败
+          </view>
+          <view 
+            wx:elif="{{item.product}}" 
+            class="goods-item" 
+            bindtap="onProductClick" 
+            data-product-id="{{item.product._id}}"
+          >
+            <image class="goods-image" src="{{item.product.cover_image}}" mode="aspectFit" />
+            <view class="goods-info">
+              <view class="goods-name">{{item.product.name}}</view>
+              <view class="goods-price">¥{{item.product.price || 0}}</view>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+  </view>
+  <!-- 无商品标记时直接显示富文本 -->
+  <view class="home-content" wx:elif="{{homeContent && homeContent.content}}">
+    <view class="home-content-title" wx:if="{{homeContent.title}}">{{homeContent.title}}</view>
+    <rich-text class="home-content-body" nodes="{{homeContent.content}}" />
+  </view>
+  <view class="home-empty" wx:if="{{!pageLoading && !homeContent && contentParts.length === 0}}">
+    <text>暂无内容</text>
+  </view>
+  <t-toast id="t-toast" />
+</view>
