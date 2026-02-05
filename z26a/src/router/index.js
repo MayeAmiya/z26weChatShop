@@ -50,6 +50,18 @@ const routes = [
     component: () => import('@/views/HomeConfig.vue'),
     meta: { requiresAuth: true },
   },
+  {
+    path: '/product-analysis',
+    name: 'product-analysis',
+    component: () => import('@/views/ProductAnalysis.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/customer-analysis',
+    name: 'customer-analysis',
+    component: () => import('@/views/CustomerAnalysis.vue'),
+    meta: { requiresAuth: true },
+  },
 ]
 
 const router = createRouter({

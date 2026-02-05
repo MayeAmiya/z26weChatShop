@@ -135,6 +135,8 @@ const menuItems = [
   { path: '/users', name: '用户管理', icon: icons.users },
   { path: '/categories', name: '分类管理', icon: icons.category },
   { path: '/home-config', name: '首页配置', icon: icons.home },
+  { path: '/product-analysis', name: '商品分析', icon: icons.chart },
+  { path: '/customer-analysis', name: '客户分析', icon: icons.users },
 ]
 
 // 页面访问历史
@@ -168,6 +170,8 @@ const statusText = computed(() => {
   if (route.path.startsWith('/users')) return '用户管理 - 管理用户账户'
   if (route.path.startsWith('/categories')) return '分类管理 - 管理商品分类'
   if (route.path.startsWith('/home-config')) return '首页配置 - 管理轮播图和推荐商品'
+  if (route.path.startsWith('/product-analysis')) return '商品分析 - 分析商品销售数据'
+  if (route.path.startsWith('/customer-analysis')) return '客户分析 - 分析客户行为数据'
   return '就绪'
 })
 

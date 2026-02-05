@@ -141,6 +141,14 @@
           <img :src="icons.dashboard32" />
           <span>首页配置</span>
         </div>
+        <div class="win-desktop-icon" @click="$router.push('/product-analysis')">
+          <img :src="icons.chart32" />
+          <span>商品分析</span>
+        </div>
+        <div class="win-desktop-icon" @click="$router.push('/customer-analysis')">
+          <img :src="icons.users32" />
+          <span>客户分析</span>
+        </div>
       </div>
     </div>
   </div>
