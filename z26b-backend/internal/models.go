@@ -323,6 +323,94 @@ type HomeContent struct {
 func (HomeContent) TableName() string { return "home_content" }
 
 // ============================================
+// CRM 事件表
+// ============================================
+
+// CRMEventType CRM事件类型
+const (
+	CRMEventTypeView     = "view"     // 浏览商品
+	CRMEventTypeCart     = "cart"     // 加入购物车
+	CRMEventTypePurchase = "purchase" // 购买
+	CRMEventTypeRefund   = "refund"   // 退款
+	CRMEventTypeComment  = "comment"  // 评论
+	CRMEventTypeShare    = "share"    // 分享
+	CRMEventTypeFavorite = "favorite" // 收藏
+	CRMEventTypeLogin    = "login"    // 登录
+)
+
+// CRMEvent CRM事件记录表
+type CRMEvent struct {
+	ID        string         `gorm:"primaryKey" json:"_id"`
+	UserID    string         `gorm:"column:user_id;index" json:"userId"`
+	User      *User          `gorm:"foreignKey:UserID;references:ID" json:"user,omitempty"`
+	EventType string         `gorm:"column:event_type;index" json:"eventType"`   // 事件类型
+	SPUID     string         `gorm:"column:spu_id;index" json:"spuId,omitempty"` // 关联商品ID（可选）
+	SPU       *SPU           `gorm:"foreignKey:SPUID;references:ID" json:"spu,omitempty"`
+	SKUID     string         `gorm:"column:sku_id" json:"skuId,omitempty"`     // 关联SKU ID（可选）
+	OrderID   string         `gorm:"column:order_id" json:"orderId,omitempty"` // 关联订单ID（可选）
+	Amount    float64        `gorm:"column:amount" json:"amount,omitempty"`    // 金额（购买/退款时）
+	Extra     datatypes.JSON `gorm:"type:json" json:"extra,omitempty"`         // 额外数据
+	IPAddress string         `gorm:"column:ip_address" json:"ipAddress,omitempty"`
+	UserAgent string         `gorm:"column:user_agent" json:"userAgent,omitempty"`
+	CreatedAt int64          `gorm:"column:created_at;index" json:"createdAt"`
+}
+
+func (CRMEvent) TableName() string { return "crm_event" }
+
+// ============================================
+// 客户统计表
+// ============================================
+
+// CustomerStats 客户统计快照表
+type CustomerStats struct {
+	ID            string         `gorm:"primaryKey" json:"_id"`
+	UserID        string         `gorm:"column:user_id;uniqueIndex" json:"userId"`
+	User          *User          `gorm:"foreignKey:UserID;references:ID" json:"user,omitempty"`
+	TotalOrders   int            `gorm:"column:total_orders;default:0" json:"totalOrders"`          // 总订单数
+	TotalSpent    float64        `gorm:"column:total_spent;default:0" json:"totalSpent"`            // 总消费金额
+	AvgOrderValue float64        `gorm:"column:avg_order_value;default:0" json:"avgOrderValue"`     // 平均订单金额
+	TotalRefunds  int            `gorm:"column:total_refunds;default:0" json:"totalRefunds"`        // 总退款次数
+	RefundAmount  float64        `gorm:"column:refund_amount;default:0" json:"refundAmount"`        // 总退款金额
+	TotalViews    int            `gorm:"column:total_views;default:0" json:"totalViews"`            // 总浏览次数
+	TotalCarts    int            `gorm:"column:total_carts;default:0" json:"totalCarts"`            // 总加购次数
+	TotalComments int            `gorm:"column:total_comments;default:0" json:"totalComments"`      // 总评论次数
+	TotalShares   int            `gorm:"column:total_shares;default:0" json:"totalShares"`          // 总分享次数
+	LastOrderAt   *int64         `gorm:"column:last_order_at" json:"lastOrderAt,omitempty"`         // 最后下单时间
+	LastActiveAt  *int64         `gorm:"column:last_active_at" json:"lastActiveAt,omitempty"`       // 最后活跃时间
+	CustomerLevel string         `gorm:"column:customer_level;default:normal" json:"customerLevel"` // 客户等级
+	Tags          datatypes.JSON `gorm:"type:json" json:"tags,omitempty"`                           // 客户标签
+	CreatedAt     time.Time      `json:"createdAt"`
+	UpdatedAt     time.Time      `json:"updatedAt"`
+}
+
+func (CustomerStats) TableName() string { return "customer_stats" }
+
+// ============================================
+// 商品统计表
+// ============================================
+
+// ProductStats 商品统计快照表
+type ProductStats struct {
+	ID             string    `gorm:"primaryKey" json:"_id"`
+	SPUID          string    `gorm:"column:spu_id;uniqueIndex" json:"spuId"`
+	SPU            *SPU      `gorm:"foreignKey:SPUID;references:ID" json:"spu,omitempty"`
+	TotalViews     int       `gorm:"column:total_views;default:0" json:"totalViews"`         // 总浏览量
+	TotalCarts     int       `gorm:"column:total_carts;default:0" json:"totalCarts"`         // 总加购数
+	TotalSales     int       `gorm:"column:total_sales;default:0" json:"totalSales"`         // 总销量
+	TotalRevenue   float64   `gorm:"column:total_revenue;default:0" json:"totalRevenue"`     // 总营收
+	TotalRefunds   int       `gorm:"column:total_refunds;default:0" json:"totalRefunds"`     // 总退款数
+	RefundAmount   float64   `gorm:"column:refund_amount;default:0" json:"refundAmount"`     // 总退款金额
+	TotalComments  int       `gorm:"column:total_comments;default:0" json:"totalComments"`   // 总评论数
+	AvgScore       float64   `gorm:"column:avg_score;default:0" json:"avgScore"`             // 平均评分
+	TotalShares    int       `gorm:"column:total_shares;default:0" json:"totalShares"`       // 总分享数
+	ConversionRate float64   `gorm:"column:conversion_rate;default:0" json:"conversionRate"` // 转化率
+	CreatedAt      time.Time `json:"createdAt"`
+	UpdatedAt      time.Time `json:"updatedAt"`
+}
+
+func (ProductStats) TableName() string { return "product_stats" }
+
+// ============================================
 // 工具类型
 // ============================================
 

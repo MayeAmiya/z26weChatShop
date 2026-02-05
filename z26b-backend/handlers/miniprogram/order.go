@@ -107,6 +107,24 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 		return
 	}
 
+	// 记录购买事件
+	go func() {
+		for _, item := range selectedItems {
+			if item.SKU != nil {
+				h.CRMEventService.RecordEvent(&internal.CRMEvent{
+					UserID:    user.ID,
+					EventType: internal.CRMEventTypePurchase,
+					SPUID:     item.SKU.SPUID,
+					SKUID:     item.SKUID,
+					OrderID:   order.ID,
+					Amount:    item.SKU.Price * float64(item.Quantity),
+					IPAddress: c.ClientIP(),
+					UserAgent: c.Request.UserAgent(),
+				})
+			}
+		}
+	}()
+
 	c.JSON(http.StatusOK, gin.H{
 		"data": gin.H{
 			"order":         order,

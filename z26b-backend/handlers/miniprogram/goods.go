@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"z26b-backend/internal"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -39,6 +41,22 @@ func (h *Handler) GetGood(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Good not found"})
 		return
 	}
+
+	// 记录商品浏览事件
+	go func() {
+		user, _ := h.GetOrCreateUser(c)
+		userID := ""
+		if user != nil {
+			userID = user.ID
+		}
+		h.CRMEventService.RecordEvent(&internal.CRMEvent{
+			UserID:    userID,
+			EventType: internal.CRMEventTypeView,
+			SPUID:     id,
+			IPAddress: c.ClientIP(),
+			UserAgent: c.Request.UserAgent(),
+		})
+	}()
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": gin.H{

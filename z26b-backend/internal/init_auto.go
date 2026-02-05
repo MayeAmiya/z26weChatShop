@@ -322,6 +322,70 @@ func CreateAllTables(db *gorm.DB) error {
 		)`,
 		`CREATE INDEX IF NOT EXISTS idx_home_content_key ON home_content(key)`,
 		`CREATE INDEX IF NOT EXISTS idx_home_content_enabled ON home_content(enabled)`,
+
+		// CRM Event (CRM事件表)
+		`CREATE TABLE IF NOT EXISTS crm_event (
+			id TEXT PRIMARY KEY,
+			user_id TEXT,
+			event_type TEXT,
+			spu_id TEXT,
+			sku_id TEXT,
+			order_id TEXT,
+			amount DECIMAL(10,2),
+			extra JSONB,
+			ip_address TEXT,
+			user_agent TEXT,
+			created_at BIGINT
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_crm_event_user_id ON crm_event(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_crm_event_event_type ON crm_event(event_type)`,
+		`CREATE INDEX IF NOT EXISTS idx_crm_event_spu_id ON crm_event(spu_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_crm_event_created_at ON crm_event(created_at)`,
+
+		// Customer Stats (客户统计表)
+		`CREATE TABLE IF NOT EXISTS customer_stats (
+			id TEXT PRIMARY KEY,
+			user_id TEXT UNIQUE,
+			total_orders INTEGER DEFAULT 0,
+			total_spent DECIMAL(10,2) DEFAULT 0,
+			avg_order_value DECIMAL(10,2) DEFAULT 0,
+			total_refunds INTEGER DEFAULT 0,
+			refund_amount DECIMAL(10,2) DEFAULT 0,
+			total_views INTEGER DEFAULT 0,
+			total_carts INTEGER DEFAULT 0,
+			total_comments INTEGER DEFAULT 0,
+			total_shares INTEGER DEFAULT 0,
+			last_order_at BIGINT,
+			last_active_at BIGINT,
+			customer_level TEXT DEFAULT 'normal',
+			tags JSONB,
+			created_at TIMESTAMP,
+			updated_at TIMESTAMP
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_customer_stats_user_id ON customer_stats(user_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_customer_stats_customer_level ON customer_stats(customer_level)`,
+		`CREATE INDEX IF NOT EXISTS idx_customer_stats_total_spent ON customer_stats(total_spent)`,
+
+		// Product Stats (商品统计表)
+		`CREATE TABLE IF NOT EXISTS product_stats (
+			id TEXT PRIMARY KEY,
+			spu_id TEXT UNIQUE,
+			total_views INTEGER DEFAULT 0,
+			total_carts INTEGER DEFAULT 0,
+			total_sales INTEGER DEFAULT 0,
+			total_revenue DECIMAL(10,2) DEFAULT 0,
+			total_refunds INTEGER DEFAULT 0,
+			refund_amount DECIMAL(10,2) DEFAULT 0,
+			total_comments INTEGER DEFAULT 0,
+			avg_score DECIMAL(3,2) DEFAULT 0,
+			total_shares INTEGER DEFAULT 0,
+			conversion_rate DECIMAL(5,4) DEFAULT 0,
+			created_at TIMESTAMP,
+			updated_at TIMESTAMP
+		)`,
+		`CREATE INDEX IF NOT EXISTS idx_product_stats_spu_id ON product_stats(spu_id)`,
+		`CREATE INDEX IF NOT EXISTS idx_product_stats_total_sales ON product_stats(total_sales)`,
+		`CREATE INDEX IF NOT EXISTS idx_product_stats_total_revenue ON product_stats(total_revenue)`,
 	}
 
 	for _, sql := range sqlStatements {

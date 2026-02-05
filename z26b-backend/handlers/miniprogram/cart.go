@@ -55,6 +55,22 @@ func (h *Handler) AddToCart(c *gin.Context) {
 		return
 	}
 
+	// 记录加购事件
+	go func() {
+		// 获取SKU关联的SPU
+		var sku internal.SKU
+		if h.DB.First(&sku, "id = ?", req.SKUID).Error == nil {
+			h.CRMEventService.RecordEvent(&internal.CRMEvent{
+				UserID:    user.ID,
+				EventType: internal.CRMEventTypeCart,
+				SPUID:     sku.SPUID,
+				SKUID:     req.SKUID,
+				IPAddress: c.ClientIP(),
+				UserAgent: c.Request.UserAgent(),
+			})
+		}
+	}()
+
 	// 获取更新后的购物车项
 	items, err := h.CartService.GetCartItems(user.ID)
 	if err != nil {

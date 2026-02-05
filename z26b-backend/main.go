@@ -14,6 +14,7 @@ import (
 	"z26b-backend/internal"
 	"z26b-backend/middleware"
 	admin_services "z26b-backend/services/admin_services"
+	"z26b-backend/services/crm"
 	miniprogram_services "z26b-backend/services/miniprogram"
 
 	"github.com/gin-gonic/gin"
@@ -70,9 +71,14 @@ func main() {
 	wechatService := miniprogram_services.NewWechatService(db)
 	adminCategoryService := admin_services.NewAdminCategoryService(db)
 
+	// Initialize CRM services
+	crmEventService := crm.NewCRMEventService(db)
+	customerStatsService := crm.NewCustomerStatsService(db)
+	productStatsService := crm.NewProductStatsService(db)
+
 	// Initialize handlers
-	mpHandler := miniprogram.NewHandler(goodsService, userService, cartService, orderService, commentService, wechatService, db)
-	adminHandler := admin.NewHandler(adminGoodsService, adminCategoryService, db) // admin可能还需要其他services，暂时保持db
+	mpHandler := miniprogram.NewHandler(goodsService, userService, cartService, orderService, commentService, wechatService, crmEventService, db)
+	adminHandler := admin.NewHandler(adminGoodsService, adminCategoryService, crmEventService, customerStatsService, productStatsService, db)
 	addressHandler := handlers.NewAddressHandler(addressService)
 
 	// ====== 小程序端 API ======
@@ -281,6 +287,30 @@ func initAdminRoutes(router *gin.Engine, h *admin.Handler) {
 			protected.GET("/home-config/contents/:key", h.AdminGetHomeContent)
 			protected.POST("/home-config/contents", h.AdminSaveHomeContent)
 			protected.DELETE("/home-config/contents/:key", h.AdminDeleteHomeContent)
+
+			// CRM - Dashboard
+			protected.GET("/crm/dashboard", h.AdminGetCRMDashboard)
+
+			// CRM - Product Analysis
+			protected.GET("/crm/product/overview", h.AdminGetProductAnalysisOverview)
+			protected.GET("/crm/product/list", h.AdminGetProductStatsList)
+			protected.GET("/crm/product/top", h.AdminGetTopProductStats)
+			protected.POST("/crm/product/:id/refresh", h.AdminRefreshProductStats)
+			protected.POST("/crm/product/refresh-all", h.AdminRefreshAllProductStats)
+
+			// CRM - Customer Analysis
+			protected.GET("/crm/customer/overview", h.AdminGetCustomerAnalysisOverview)
+			protected.GET("/crm/customer/list", h.AdminGetCustomerStatsList)
+			protected.GET("/crm/customer/top", h.AdminGetTopCustomers)
+			protected.GET("/crm/customer/level-distribution", h.AdminGetCustomerLevelDistribution)
+			protected.POST("/crm/customer/:id/refresh", h.AdminRefreshCustomerStats)
+			protected.POST("/crm/customer/refresh-all", h.AdminRefreshAllCustomerStats)
+
+			// CRM - Events
+			protected.GET("/crm/events/stats", h.AdminGetCRMEventStats)
+			protected.GET("/crm/events/daily", h.AdminGetDailyEventStats)
+			protected.GET("/crm/events/user/:userId", h.AdminGetCRMEventsByUser)
+			protected.GET("/crm/events/product/:spuId", h.AdminGetCRMEventsBySPU)
 		}
 	}
 }
