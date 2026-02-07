@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"z26b-backend/handlers"
@@ -91,9 +89,6 @@ func main() {
 	router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok", "message": "Server is running"})
 	})
-
-	// Serve admin frontend
-	serveAdminFrontend(router)
 
 	// Start server
 	port := os.Getenv("SERVER_PORT")
@@ -312,29 +307,5 @@ func initAdminRoutes(router *gin.Engine, h *admin.Handler) {
 			protected.GET("/crm/events/user/:userId", h.AdminGetCRMEventsByUser)
 			protected.GET("/crm/events/product/:spuId", h.AdminGetCRMEventsBySPU)
 		}
-	}
-}
-
-func serveAdminFrontend(router *gin.Engine) {
-	adminDistPath := os.Getenv("ADMIN_DIST_PATH")
-	if adminDistPath == "" {
-		adminDistPath = "../z26a/dist"
-	}
-
-	if _, err := os.Stat(adminDistPath); err == nil {
-		router.Static("/assets", adminDistPath+"/assets")
-		router.StaticFile("/favicon.ico", adminDistPath+"/favicon.ico")
-
-		router.NoRoute(func(c *gin.Context) {
-			path := c.Request.URL.Path
-			if strings.HasPrefix(path, "/api") || strings.HasPrefix(path, "/admin/api") {
-				c.JSON(http.StatusNotFound, gin.H{"error": "Not found"})
-				return
-			}
-			c.File(adminDistPath + "/index.html")
-		})
-		log.Printf("Admin frontend served from: %s", adminDistPath)
-	} else {
-		log.Printf("Warning: Admin frontend not found at %s (run 'npm run build' in z26a)", adminDistPath)
 	}
 }
